@@ -25,7 +25,6 @@ type Block struct {
 }
 
 var Blockchain []Block
-var bcServer chan []Block
 
 type Job struct {
 	Msg string
@@ -51,6 +50,7 @@ func (w *Worker) Process(data []byte) error {
 		log.Println(err)
 		return err
 	}
+	spew.Dump(newBlock)
 
 	if isBlockValid(newBlock, Blockchain[len(Blockchain)-1]) {
 		newBlockchain := append(Blockchain, newBlock)
@@ -58,12 +58,11 @@ func (w *Worker) Process(data []byte) error {
 		spew.Dump(Blockchain)
 	}
 
-	bcServer <- Blockchain
 	return nil
 }
 
 func createQueue(clientName string) *workers.WorkerQueue {
-	return workers.CreateWorkerQueue("blockchain_demo", clientName, "Queue", clientName)
+	return workers.CreateWorkerQueue("blockchaindemo", clientName, "Queue", clientName)
 }
 
 func handler(w http.ResponseWriter, r *http.Request) {

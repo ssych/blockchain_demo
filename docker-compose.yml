@@ -5,6 +5,8 @@ services:
     restart: always
     depends_on:
       - nats
+    ports:
+      - "3001:3000"
     networks:
       - blockchain_demo
     environment:
@@ -19,6 +21,9 @@ services:
       - nats
     networks:
       - blockchain_demo
+    ports:
+      - "3002:3000"
+
     environment:
       - NATS_URL=nats://nats:4222
       - JOB_NAME=job2
@@ -27,17 +32,17 @@ services:
   nats:
     image: nats-streaming
     restart: always
-    command: -DV -cid gostreaming --store FILE --dir /data
+    command: -DV -cid blockchaindemo --store FILE --dir /data
     volumes:
       - natsdata:/data
     networks:
-      - go-streaming
+      - blockchain_demo
 
 volumes:
   natsdata: {}
 
 networks:
-  go-streaming:
+  blockchain_demo:
     driver: bridge
 
 
