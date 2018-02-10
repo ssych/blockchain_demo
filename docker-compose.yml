@@ -1,0 +1,43 @@
+version: '2'
+services:
+  node1:
+    image: blockchain_demo:latest
+    restart: always
+    depends_on:
+      - nats
+    networks:
+      - blockchain_demo
+    environment:
+      - NATS_URL=nats://nats:4222
+      - JOB_NAME=job1
+      - WORKER_NAME=client1
+
+  node2:
+    image: blockchain_demo:latest
+    restart: always
+    depends_on:
+      - nats
+    networks:
+      - blockchain_demo
+    environment:
+      - NATS_URL=nats://nats:4222
+      - JOB_NAME=job2
+      - WORKER_NAME=client2
+
+  nats:
+    image: nats-streaming
+    restart: always
+    command: -DV -cid gostreaming --store FILE --dir /data
+    volumes:
+      - natsdata:/data
+    networks:
+      - go-streaming
+
+volumes:
+  natsdata: {}
+
+networks:
+  go-streaming:
+    driver: bridge
+
+
